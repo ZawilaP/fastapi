@@ -47,8 +47,8 @@ def get_password_hash(password):
     return password_context.hash(password)
 
 
-print([get_password_hash(p)
-      for p in ['topsecret', 'longpassword', 'easypass']])
+# print([get_password_hash(p)
+#       for p in ['topsecret', 'longpassword', 'easypass']])
 
 
 def authenticate(users, username: str, password: str):

@@ -18,6 +18,8 @@ import time
 from random import randint
 import io
 
+# This is done, no need to edit
+
 
 async def process_image(filename: str, database, _id) -> str:
     start = time.time()
@@ -26,7 +28,6 @@ async def process_image(filename: str, database, _id) -> str:
     time.sleep(randint(0, 1))
     pil_img.save(f'{filename.replace("files/", "processed/")}')
     end = time.time()
-    print(end-start)
     query = tasks.update().where(tasks.c.id == _id).values(
         status=True, duration=end-start)
     await database.execute(query)
@@ -43,12 +44,7 @@ database = databases.Database(DATABASE_URL)
 metadata = sqlalchemy.MetaData()
 
 tasks = sqlalchemy.Table(
-    "tasks",
-    metadata,
-    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
-    sqlalchemy.Column("filename", sqlalchemy.String),
-    sqlalchemy.Column("status", sqlalchemy.Boolean),
-    sqlalchemy.Column("duration", sqlalchemy.Float),
+    ...
 )
 
 
@@ -59,15 +55,11 @@ metadata.create_all(engine)
 
 
 class TaskAdd(BaseModel):
-    filename: str
-    status: bool
+    ...
 
 
 class Task(BaseModel):
-    id: int
-    filename: str
-    status: bool
-    duration: float | None
+    ...
 
 
 app = FastAPI()
@@ -85,24 +77,14 @@ async def shutdown():
 
 @app.get("/tasks/", response_model=List[Task])
 async def get_tasks():
-    query = tasks.select()
-    return await database.fetch_all(query)
+    pass
 
 
 @app.get("/tasks/done", response_model=List[Task])
-async def get_tasks():
-    query = tasks.select().where(tasks.c.status == True)
-    return await database.fetch_all(query)
+async def get_tasks_done():
+    pass
 
 
 @app.post("/tasks/new")
 async def process_file(file: UploadFile, bg: BackgroundTasks):
-    data = await file.read()
-    with open(f'files/{file.filename}', 'wb') as f:
-        f.write(data)
-        query = tasks.insert().values(filename=file.filename, status=False)
-        last_record_id = await database.execute(query)
-        bg.add_task(
-            process_image, f'files/{file.filename}', database, last_record_id)
-
-    return {"filename": file.filename, "processing": len(data)}
+    pass

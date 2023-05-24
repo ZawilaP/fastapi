@@ -2,3 +2,4 @@ __pycache__
 __pycache__/*
 08_deploy_debug/01_subscribe.py
 08_deploy_debug/zapisy.db
+.db
