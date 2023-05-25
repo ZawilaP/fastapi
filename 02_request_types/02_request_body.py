@@ -37,9 +37,14 @@ async def get_task(task: Task):  # Consume the task from the queue
 async def task_count(task: Task):  # Get number of tasks!
     return {'error': 'unimplemented'}
 
+
 # Now something more difficult.
 # Create a BaseModel child class that will represent a patient waiting for a visit.
 # Each patient has a first name, last name and age
+
+
+
+
 # Create a queue of patients (eg. collections.deque)
 # We need endpoints to:
 # - add more patients to the queue (details are sent in the body)
@@ -47,6 +52,28 @@ async def task_count(task: Task):  # Get number of tasks!
 # - get current patient queue length
 # - (*) Extra credit! for ensuring that the queue is never longer than 20
 class Patient(BaseModel):
-    pass
+    first_name: str
+    last_name: str
+    age: int
 
+patients_queue = collections.deque()
+
+@app.post("/patient")
+async def add_patient(patient: Patient):  # Puts the task in queue
+    if len(patients_queue) < 20:
+        patients_queue.appendleft(patient)
+        return {'message': 'ok'}
+    else:
+        return {'message': 'queue too long, can\'t register new patient'}
+
+@app.get("/patient")
+async def treat_patient():  # Consume the task from the queue
+    if len(patients_queue) != 0:
+        return {'task': patients_queue.pop()}
+    else:
+        return {'task': 'None'}
+
+@app.get("/patient/count")
+async def patient_count():  # Get number of tasks!
+    return {'message': f'{len(patients_queue)}'}
 # ???
