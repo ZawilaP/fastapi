@@ -20,14 +20,18 @@ async def get(key: Annotated[int | None, Path(ge=0, lt=len(data)-1)]):
         return data[key]
     else:
         return data
+
 dictdata = {'someguy': {'meta1': 'value 1', 'meta2': 'value2'},
             'otherguy': {'meta1': 'other value 1', 'meta2': 'other value 2'}}
 
 
 # Requirement: Name (query argument) can be between 3 and 25 chars. Use Query class with min_length and max_length arguments
-@app.get("/v2/people")
-async def count(name: int = 0):
-    return {f'error': 'not implemented'}
+@app.get("/v2/people/{name}")
+async def count(name: Annotated[str | None, Path(min_length=3, max_length=25)]):
+    if name not in dictdata:
+        return {"error": "not found"}
+    else:
+        return dictdata[name]
 
 
 # For those who are bored. Use regex validation, allow only latin alphanumeric chars so that !@#$%^ doesn't pass validation
