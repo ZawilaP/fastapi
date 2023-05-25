@@ -9,7 +9,6 @@ import shutil
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, BackgroundTasks, UploadFile
-from pydantic import BaseModel, Field
 import time
 
 path = "05_exercise"
